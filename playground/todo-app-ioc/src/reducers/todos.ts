@@ -7,20 +7,20 @@ const todosSlice = createSlice({
   name: 'todos',
   initialState,
   reducers: {
-    addTodo: (state, action: PayloadAction<{ id: number; text: string }>) => {
+    addTodo: (state, action: PayloadAction<Pick<Todo, 'id' | 'text'>>) => {
       state.push({
         id: action.payload.id,
         text: action.payload.text,
         completed: false,
       });
     },
-    toggleTodo: (state, action: PayloadAction<{ id: number }>) => {
+    toggleTodo: (state, action: PayloadAction<Pick<Todo, 'id'>>) => {
       const todo = state.find(todo => todo.id === action.payload.id);
       if (todo) {
         todo.completed = !todo.completed;
       }
     },
-    deleteTodo: (state, action: PayloadAction<{ id: number }>) => {
+    deleteTodo: (state, action: PayloadAction<Pick<Todo, 'id'>>) => {
       return state.filter(todo => todo.id !== action.payload.id);
     },
   },

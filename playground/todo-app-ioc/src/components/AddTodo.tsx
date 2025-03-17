@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { useManager } from './ServiceContext';
+import { Todo } from '../types';
 
-const AddTodo: React.FC = () => {
+const AddTodo: React.FC<{
+  addTodoOptimistic: (todo: Pick<Todo, 'text' | 'completed'>) => Promise<void>;
+  isLoading?: boolean;
+}> = ({ addTodoOptimistic, isLoading }) => {
   const [text, setText] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const manager = useManager();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -17,11 +20,8 @@ const AddTodo: React.FC = () => {
   const handleAsyncSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!text.trim()) return;
-
-    setIsLoading(true);
-    await manager.addTodoAsync(text);
     setText('');
-    setIsLoading(false);
+    await addTodoOptimistic({ text, completed: false });
   };
 
   return (

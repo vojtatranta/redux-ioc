@@ -1,16 +1,11 @@
 import React from 'react';
 import TodoItem from './TodoItem';
-import { TodoState, VisibilityFilter } from '../types';
-import { useManager } from './ServiceContext';
+import { Todo, TodoState, VisibilityFilter } from '../types';
 import { useSelector } from 'react-redux';
 
-const TodoList: React.FC = () => {
-  // Get services
-  const manager = useManager();
-
+const TodoList: React.FC<{ todos: Todo[] }> = ({ todos }) => {
   // Get data from services
-  const todos = useSelector((state: TodoState) => state.todos);
-  const visibilityFilter = manager.getVisibilityFilter();
+  const visibilityFilter = useSelector((state: TodoState) => state.visibilityFilter);
 
   // Filter todos based on the current visibility filter
   const getVisibleTodos = () => {

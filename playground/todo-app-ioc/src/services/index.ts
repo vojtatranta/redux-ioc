@@ -17,6 +17,9 @@ import {
 import { setVisibilityFilter as setVisibilityFilterAction } from '../reducers/visibilityFilter';
 import store from '../store';
 import { InferInterface } from '../../../../src/ts-ioc';
+import { useManager } from '../components/ServiceContext';
+import { useSelector } from 'react-redux';
+import { useMemo, useState } from 'react';
 
 // Define our dependencies
 
@@ -35,14 +38,16 @@ const storeServiceFactory = storeServicTypedFactory({
 
 const fetchServiceTypedFactory = createTypedFactory<StoreDependency>();
 const fetchServiceFactory = fetchServiceTypedFactory({
-  fetch: ({ store }) => {
-    // Simulate API call
-    return new Promise<void>(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, 1000);
-    });
-  },
+  fetch:
+    ({ store }) =>
+    (nextName: string) => {
+      // Simulate API call
+      return new Promise<string>(resolve => {
+        setTimeout(() => {
+          resolve(String(Math.random()) + nextName);
+        }, 4000);
+      });
+    },
 });
 
 const storeService = storeServiceFactory({});
@@ -59,7 +64,6 @@ export type ServiceInterfaceFactory = InferInterface<typeof services>;
 
 const typedManagerFactory = createTypedFactory<ServiceInterfaceFactory>();
 
-let nextTodoId = 0;
 // Define our services using the factory
 const managerFactory = typedManagerFactory({
   // Todo service implementation
@@ -67,24 +71,20 @@ const managerFactory = typedManagerFactory({
   getTodos: deps => () => deps.store.getState().todos,
 
   addTodo: deps => (text: string) => {
-    deps.store.dispatch(addTodoAction({ id: nextTodoId++, text }));
+    deps.store.dispatch(addTodoAction({ id: String(Math.random()), text }));
   },
 
-  toggleTodo: deps => (id: number) => {
+  toggleTodo: deps => (id: string) => {
     deps.store.dispatch(toggleTodoAction({ id }));
   },
 
-  deleteTodo: deps => (id: number) => {
+  deleteTodo: deps => (id: string) => {
     deps.store.dispatch(deleteTodoAction({ id }));
   },
 
-  addTodoAsync: deps => (text: string) => {
-    return new Promise<void>(resolve => {
-      setTimeout(() => {
-        deps.store.dispatch(addTodoAction({ id: nextTodoId++, text }));
-        resolve();
-      }, 1000);
-    });
+  addTodoAsync: deps => async (text: string) => {
+    const nextId = await deps.fetch(text);
+    deps.store.dispatch(addTodoAction({ id: nextId, text }));
   },
 
   // Filter service impleme
@@ -101,3 +101,31 @@ export type ManagerInterface = typeof manager;
 
 export { manager };
 export { services };
+
+export function useOptimisticAddTodoMutation(): {
+  addTodoOptimistic: (todo: Pick<Todo, 'text' | 'completed'>) => Promise<void>;
+  todos: Todo[];
+  loading: boolean;
+} {
+  const manager = useManager();
+  const todos = useSelector((state: TodoState) => state.todos);
+
+  const [optimisticTodo, setOptimisticTodo] = useState<Todo | null>(null);
+
+  return {
+    addTodoOptimistic: async (todo: Pick<Todo, 'text' | 'completed'>) => {
+      setOptimisticTodo({ id: String(Math.random()), text: todo.text, completed: false });
+      try {
+        await manager.addTodoAsync(todo.text);
+      } finally {
+        setOptimisticTodo(null);
+      }
+    },
+
+    todos: useMemo(
+      () => (optimisticTodo ? [...todos, optimisticTodo] : todos),
+      [todos, optimisticTodo]
+    ),
+    loading: optimisticTodo !== null,
+  };
+}
