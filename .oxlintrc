@@ -1,0 +1,7 @@
+{
+  "extends": ["recommended"],
+  "rules": {},
+  "eslint": {
+    "enable": true
+  }
+}
