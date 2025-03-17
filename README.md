@@ -1,5 +1,13 @@
 # ts-ioc
 
+**A proof of concept repository showing how to make Redux better with a proper dependency management**
+
+**Warning: The API will change drastically in the future**
+
+Full playground example is located here: [todo-app-ioc](./playground/todo-app-ioc/)
+
+For comparison, how would a standard thunk-based redux app look, check out [todo-app](./playground/todo-app/)
+
 A lightweight, type-safe IoC (Inversion of Control) container for TypeScript.
 
 ## Features
