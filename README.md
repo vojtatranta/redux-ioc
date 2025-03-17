@@ -31,8 +31,8 @@ const loggerService = loggerServiceFac({
 // Create a service that depends on the logger
 const userServiceFac = createTypedFactory<InferInterface<typeof loggerService>>();
 const userService = userServiceFac({
-  fetchUser: 
-    ({ log, error }) => 
+  fetchUser:
+    ({ log, error }) =>
     async (userId: string) => {
       log(`Fetching user with ID: ${userId}`);
       try {
@@ -42,18 +42,17 @@ const userService = userServiceFac({
         error(`Failed to fetch user: ${err}`);
         throw err;
       }
-    }
+    },
 });
 
 // Create an implementation
 const implementation = userService({
-  log: (message) => console.log(`[CUSTOM LOG]: ${message}`),
-  error: (message) => console.error(`[CUSTOM ERROR]: ${message}`)
+  log: message => console.log(`[CUSTOM LOG]: ${message}`),
+  error: message => console.error(`[CUSTOM ERROR]: ${message}`),
 });
 
 // Use the implementation
-implementation.fetchUser('123')
-  .then(user => console.log(user));
+implementation.fetchUser('123').then(user => console.log(user));
 ```
 
 ## Advanced Usage with Redux
@@ -74,19 +73,23 @@ const storeService = storeServiceFac({
 // Create a user service that depends on the store
 const userServiceFac = createTypedFactory<InferInterface<typeof storeService>>();
 const userService = userServiceFac({
-  getCurrentUser: ({ store }) => () => {
-    const state = store.getState();
-    return state.auth.currentUser;
-  },
-  
-  updateUser: ({ store }) => (updates) => {
-    store.dispatch({ type: 'UPDATE_USER', payload: updates });
-  }
+  getCurrentUser:
+    ({ store }) =>
+    () => {
+      const state = store.getState();
+      return state.auth.currentUser;
+    },
+
+  updateUser:
+    ({ store }) =>
+    updates => {
+      store.dispatch({ type: 'UPDATE_USER', payload: updates });
+    },
 });
 
 // Create an implementation
 const implementation = userService({
-  store: store
+  store: store,
 });
 
 // Use the implementation
@@ -101,6 +104,7 @@ implementation.updateUser({ name: 'Jane Doe' });
 Creates a factory function that can be used to define services with dependencies.
 
 **Parameters:**
+
 - `Deps`: (Optional) Type parameter for dependencies
 
 **Returns:**
@@ -111,6 +115,7 @@ A factory function that accepts a configuration object and returns a service fac
 A utility type that extracts the interface from a factory created with `createTypedFactory`.
 
 **Parameters:**
+
 - `T`: A factory created with `createTypedFactory`
 
 **Returns:**

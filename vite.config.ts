@@ -18,7 +18,7 @@ export default defineConfig({
       // Generate multiple formats
       formats: ['es', 'cjs', 'umd'],
       // Output file names
-      fileName: (format) => `index.${format}.js`,
+      fileName: format => `index.${format}.js`,
     },
     rollupOptions: {
       // Make sure to externalize deps that shouldn't be bundled

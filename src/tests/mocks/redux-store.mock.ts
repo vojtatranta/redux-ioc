@@ -70,7 +70,9 @@ export const actionCreators = {
     type: ActionTypes.FETCH_USER_FAILURE,
     payload: error,
   }),
-  updateUserRequest: (user: Partial<User> & { id: string }): Action<Partial<User> & { id: string }> => ({
+  updateUserRequest: (
+    user: Partial<User> & { id: string }
+  ): Action<Partial<User> & { id: string }> => ({
     type: ActionTypes.UPDATE_USER_REQUEST,
     payload: user,
   }),

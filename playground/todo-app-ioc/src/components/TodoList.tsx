@@ -1,0 +1,44 @@
+import React from 'react';
+import TodoItem from './TodoItem';
+import { TodoState, VisibilityFilter } from '../types';
+import { useManager } from './ServiceContext';
+import { useSelector } from 'react-redux';
+
+const TodoList: React.FC = () => {
+  // Get services
+  const manager = useManager();
+
+  // Get data from services
+  const todos = useSelector((state: TodoState) => state.todos);
+  const visibilityFilter = manager.getVisibilityFilter();
+
+  // Filter todos based on the current visibility filter
+  const getVisibleTodos = () => {
+    switch (visibilityFilter) {
+      case VisibilityFilter.SHOW_ALL:
+        return todos;
+      case VisibilityFilter.SHOW_COMPLETED:
+        return todos.filter(todo => todo.completed);
+      case VisibilityFilter.SHOW_ACTIVE:
+        return todos.filter(todo => !todo.completed);
+      default:
+        return todos;
+    }
+  };
+
+  const visibleTodos = getVisibleTodos();
+
+  if (visibleTodos.length === 0) {
+    return <p>No todos yet! Add some tasks to get started.</p>;
+  }
+
+  return (
+    <ul className="todo-list">
+      {visibleTodos.map(todo => (
+        <TodoItem key={todo.id} todo={todo} />
+      ))}
+    </ul>
+  );
+};
+
+export default TodoList;

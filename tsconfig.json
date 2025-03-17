@@ -18,6 +18,13 @@
     "declarationDir": "./dist",
     "outDir": "./dist"
   },
-  "include": ["./src/**/*.ts"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts", "**/playground/**", "**/tests/**"]
+  "include": ["./src/**/*.ts", "./playground/**/*"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/playground/**",
+    "**/tests/**"
+  ]
 }

@@ -7,7 +7,7 @@ export type InferInterface<T extends Record<string, any>> = T extends {
 }
   ? D
   : {
-      [K in keyof T as K extends `_${string}` ? never : K]: T[K];
+      [K in keyof T as K extends `_${string}` ? never : K]: () => T[K];
     };
 
 export const createTypedFactory =
