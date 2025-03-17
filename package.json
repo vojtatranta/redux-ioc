@@ -1,25 +1,55 @@
 {
   "name": "ts-ioc",
-  "version": "0.0.0",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "lint": "oxlint && eslint .",
-    "lint:ox": "oxlint",
-    "lint:es": "eslint .",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+  "version": "0.1.0",
+  "description": "A lightweight, type-safe IoC container for TypeScript",
+  "author": "Vojta Tranta",
+  "license": "MIT",
+  "keywords": [
+    "typescript",
+    "ioc",
+    "dependency-injection",
+    "container",
+    "di",
+    "inversion-of-control"
+  ],
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.es.js",
+  "unpkg": "./dist/index.umd.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.cjs.js",
+      "types": "./dist/index.d.ts"
+    }
   },
-  "dependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "dev": "bun --bun vite",
+    "clean": "rm -rf dist",
+    "build": "bun run clean && bun --bun run tsc && bun --bun run vite build",
+    "preview": "bun --bun run vite preview",
+    "prepublishOnly": "bun run build",
+    "lint": "bun --bun run oxlint && bun --bun run eslint .",
+    "lint:ox": "bun --bun run oxlint",
+    "lint:es": "bun --bun run eslint .",
+    "format": "bun --bun run prettier --write .",
+    "format:check": "bun --bun run prettier --check .",
+    "test": "bun --bun run vitest run",
+    "test:watch": "bun --bun run vitest",
+    "test:coverage": "bun --bun run vitest run --coverage"
+  },
+  "peerDependencies": {
+    "typescript": ">=4.4.0"
   },
   "devDependencies": {
     "@types/chai": "^5.2.0",
+    "@types/glob": "^8.1.0",
+    "@types/node": "^22.13.10",
     "@types/react": "^17.0.33",
     "@types/react-dom": "^17.0.10",
     "@typescript-eslint/eslint-plugin": "^7.1.0",
@@ -32,10 +62,12 @@
     "eslint-plugin-prettier": "^5.1.3",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "glob": "^11.0.1",
     "oxlint": "^0.2.13",
     "prettier": "^3.2.5",
     "typescript": "^4.4.4",
     "vite": "^2.7.2",
+    "vite-plugin-dts": "^4.5.3",
     "vitest": "^3.0.9"
   }
 }
